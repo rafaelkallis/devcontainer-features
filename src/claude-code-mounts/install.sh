@@ -7,8 +7,8 @@ echo "Activating feature 'claude-code-mounts'"
 if ! command -v claude >/dev/null 2>&1; then
     cat <<EOF
 
-ERROR: Claude Code CLI is required but not installed!
-Please add the Claude Code feature to your devcontainer.json:
+WARNING: Claude Code CLI was not found.
+Please ensure the Claude Code feature is added to your devcontainer.json:
 
   "features": {
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
@@ -16,7 +16,6 @@ Please add the Claude Code feature to your devcontainer.json:
   }
 
 EOF
-    exit 1
 fi
 
 # Backup existing files/directories if they exist and are not already symlinks
