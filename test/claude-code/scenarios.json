@@ -1,0 +1,35 @@
+{
+    "base_alpine": {
+        "image": "mcr.microsoft.com/devcontainers/base:alpine",
+        "features": {
+            "claude-code": {}
+        }
+    },
+    "base_debian": {
+        "image": "mcr.microsoft.com/devcontainers/base:debian",
+        "features": {
+            "claude-code": {}
+        }
+    },
+    "base_ubuntu": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "claude-code": {}
+        }
+    },
+    "non_root_user": {
+        "image": "mcr.microsoft.com/devcontainers/base",
+        "remoteuser": "vscode",
+        "features": {
+            "claude-code": {}
+        }
+    },
+    "version_specific": {
+        "image": "mcr.microsoft.com/devcontainers/base",
+        "features": {
+            "claude-code": {
+                "version": "2.1.49"
+            }
+        }
+    }
+}
