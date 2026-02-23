@@ -12,7 +12,7 @@ Please ensure the Claude Code feature is added to your devcontainer.json:
 
   "features": {
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
-    "ghcr.io/rafaelkallis/features/claude-code-mounts:1": {}
+    "ghcr.io/rafaelkallis/devcontainer-features/claude-code-mounts:1": {}
   }
 
 EOF
