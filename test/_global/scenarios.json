@@ -1,0 +1,9 @@
+{
+  "claude_code_and_mounts": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "claude-code": {},
+      "claude-code-mounts": {}
+    }
+  }
+}

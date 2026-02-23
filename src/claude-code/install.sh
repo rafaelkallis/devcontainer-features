@@ -7,19 +7,25 @@ cc_install_script_url="https://claude.ai/install.sh"
 
 echo "Activating feature 'claude-code'"
 
-# Feature scripts always run as root
 if [ "$(id -u)" -ne 0 ]; then
-  echo "ERROR: This script must be run as root" >&2
+  echo -e 'Script must be run as root. Use sudo, su, or add "USER root" to your Dockerfile before running this script.'
+  exit 1
+fi
+
+if [ -z "${_REMOTE_USER}" ]; then
+  echo -e 'Feature script must be executed by a tool that implements the dev container specification. See https://containers.dev/ for more information.'
   exit 1
 fi
 
 # Determine available download command
-if command -v curl >/dev/null 2>&1; then
-  download_cmd="curl -fsSL"
-elif command -v wget >/dev/null 2>&1; then
+if command -v wget >/dev/null 2>&1; then
   download_cmd="wget -q -O -"
+elif command -v wcurl >/dev/null 2>&1; then
+  download_cmd="wcurl -fsSL"
+elif command -v curl >/dev/null 2>&1; then
+  download_cmd="curl -fsSL"
 else
-  echo "ERROR: Either curl or wget is required but neither is installed" >&2
+  echo "ERROR: Either wget, wcurl, or curl is required but none are installed" >&2
   exit 1
 fi
 
