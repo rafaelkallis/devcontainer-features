@@ -33,3 +33,21 @@ Mounts host Claude configuration directories `~/.claude.json` and `~/.claude/` i
 **Prerequisites:**
 - Claude Code CLI installed on host with existing configuration in `~/.claude/`
 - Claude Code CLI installed in dev container (e.g. via `claude-code` feature)
+
+---
+
+### Codex CLI Mounts
+
+Mounts the host Codex CLI configuration directory `~/.codex/` into the dev container, enabling Codex CLI to use your existing authentication, configuration, and local state.
+
+```jsonc
+// devcontainer.json
+{
+  "features": {
+    "ghcr.io/rafaelkallis/devcontainer-features/codex-mounts:1": {}
+  }
+}
+```
+
+**Prerequisites:**
+- Codex CLI installed on host with existing configuration in `~/.codex/`
