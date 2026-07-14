@@ -5,5 +5,11 @@
       "claude-code": {},
       "claude-code-mounts": {}
     }
+  },
+  "codex_mounts": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "codex-mounts": {}
+    }
   }
 }

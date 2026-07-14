@@ -1,0 +1,14 @@
+{
+    "name": "Codex CLI Mounts",
+    "id": "codex-mounts",
+    "version": "1.0.0",
+    "description": "Mounts host Codex CLI configuration directory into the dev container",
+    "options": {},
+    "mounts": [
+        {
+            "type": "bind",
+            "source": "${localEnv:HOME}/.codex",
+            "target": "/mnt/.codex"
+        }
+    ]
+}
