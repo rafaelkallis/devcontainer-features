@@ -3,15 +3,9 @@
 set -e
 
 source dev-container-features-test-lib
+source shared.sh
 
-# Check mount points exist
-check "/mnt/.claude exists" test -d "/mnt/.claude"
-check "/mnt/.claude.json exists" test -f "/mnt/.claude.json"
-
-# Check symlinks exist and point to correct locations
-check ".claude symlink exists" test -L "$HOME/.claude"
-check ".claude.json symlink exists" test -L "$HOME/.claude.json"
-check ".claude points to /mnt/.claude" test "$(readlink "$HOME/.claude")" = "/mnt/.claude"
-check ".claude.json points to /mnt/.claude.json" test "$(readlink "$HOME/.claude.json")" = "/mnt/.claude.json"
+check "debian 12" grep -q "12" /etc/debian_version
+check_mounts_common
 
 reportResults
