@@ -8,6 +8,11 @@ A collection of Dev Container Features for development environments.
 
 Installs the Claude Code CLI tool for interacting with Anthropic's Claude language model.
 
+> **Note:** This community feature installs the CLI from `https://claude.ai/install.sh` and is **separate
+> from** the official `ghcr.io/anthropics/devcontainer-features/claude-code` feature. If you also use
+> `claude-code-mounts`, install the `claude-code` feature from this repo so ordering and config symlinks
+> stay consistent.
+
 ```jsonc
 // devcontainer.json
 {
@@ -32,7 +37,11 @@ Mounts host Claude configuration directories `~/.claude.json` and `~/.claude/` i
 
 **Prerequisites:**
 - Claude Code CLI installed on host with existing configuration in `~/.claude/`
-- Claude Code CLI installed in dev container (e.g. via `claude-code` feature)
+- Claude Code CLI installed in dev container (e.g. via the `claude-code` feature from this repo)
+
+**Notes / limitations:**
+- Requires tooling that supports **feature-level `mounts`** (VS Code or devcontainer CLI that honors the `mounts` field in the feature manifest) and host config present at build time.
+- `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.
 
 ---
 
@@ -51,3 +60,7 @@ Mounts the host Codex CLI configuration directory `~/.codex/` into the dev conta
 
 **Prerequisites:**
 - Codex CLI installed on host with existing configuration in `~/.codex/`
+
+**Notes / limitations:**
+- Requires tooling that supports **feature-level `mounts`** and host config present at build time.
+- Mounted content keeps host ownership/permissions; see the feature's `NOTES.md` for details.
