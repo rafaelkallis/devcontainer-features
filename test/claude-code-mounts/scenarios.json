@@ -2,7 +2,6 @@
     "install_on_base_debian_13": {
         "image": "mcr.microsoft.com/devcontainers/base:debian-13",
         "features": {
-            "ghcr.io/devcontainers/features/node:1": {},
             "claude-code": {},
             "claude-code-mounts": {}
         }
@@ -10,7 +9,6 @@
     "install_on_base_debian_12": {
         "image": "mcr.microsoft.com/devcontainers/base:debian-12",
         "features": {
-            "ghcr.io/devcontainers/features/node:1": {},
             "claude-code": {},
             "claude-code-mounts": {}
         }
@@ -18,7 +16,6 @@
     "install_on_base_ubuntu_24": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
         "features": {
-            "ghcr.io/devcontainers/features/node:1": {},
             "claude-code": {},
             "claude-code-mounts": {}
         }
@@ -26,7 +23,6 @@
     "install_on_base_ubuntu_22": {
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
         "features": {
-            "ghcr.io/devcontainers/features/node:1": {},
             "claude-code": {},
             "claude-code-mounts": {}
         }
