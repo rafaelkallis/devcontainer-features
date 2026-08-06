@@ -99,10 +99,10 @@ jobs:
           scandir: './'
           severity: warning
 
-      - name: Validate feature manifests
+      - name: Validate feature manifests (packaging exercises the parser)
         run: |
           for feature in src/*/; do
-            devcontainer features validate -f "$feature"
+            devcontainer features package "$feature" --output-folder /tmp/feat-pkg-$(basename "$feature") --force-clean-output-folder
           done
 
   release:
