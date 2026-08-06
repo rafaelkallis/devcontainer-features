@@ -3,7 +3,7 @@
         "image": "mcr.microsoft.com/devcontainers/base:debian-13",
         "features": {
             "ghcr.io/devcontainers/features/node:1": {},
-            "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+            "claude-code": {},
             "claude-code-mounts": {}
         }
     },
@@ -11,7 +11,7 @@
         "image": "mcr.microsoft.com/devcontainers/base:debian-12",
         "features": {
             "ghcr.io/devcontainers/features/node:1": {},
-            "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+            "claude-code": {},
             "claude-code-mounts": {}
         }
     },
@@ -19,7 +19,7 @@
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
         "features": {
             "ghcr.io/devcontainers/features/node:1": {},
-            "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+            "claude-code": {},
             "claude-code-mounts": {}
         }
     },
@@ -27,7 +27,7 @@
         "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
         "features": {
             "ghcr.io/devcontainers/features/node:1": {},
-            "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+            "claude-code": {},
             "claude-code-mounts": {}
         }
     }

@@ -5,7 +5,7 @@
     "description": "Mounts host Claude configuration directories into the dev container",
     "options": {},
     "installsAfter": [
-        "ghcr.io/anthropics/devcontainer-features/claude-code"
+        "ghcr.io/rafaelkallis/devcontainer-features/claude-code"
     ],
     "mounts": [
         {
