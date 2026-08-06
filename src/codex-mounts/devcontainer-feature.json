@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "description": "Mounts host Codex CLI configuration directory into the dev container",
     "options": {},
+    "postCreateCommand": "/usr/local/share/devcontainer-features/codex-mounts/post-create.sh",
     "mounts": [
         {
             "type": "bind",

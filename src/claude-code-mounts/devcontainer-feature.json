@@ -7,6 +7,7 @@
     "installsAfter": [
         "ghcr.io/rafaelkallis/devcontainer-features/claude-code"
     ],
+    "postCreateCommand": "/usr/local/share/devcontainer-features/claude-code-mounts/post-create.sh",
     "mounts": [
         {
             "type": "bind",

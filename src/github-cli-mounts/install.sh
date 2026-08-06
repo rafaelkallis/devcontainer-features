@@ -9,18 +9,6 @@ if [ -z "${_REMOTE_USER:-}" ] || [ -z "${_REMOTE_USER_HOME:-}" ]; then
   exit 1
 fi
 
-# Its behavior also depends on feature-level "mounts" being honored.
-if [ ! -e "/mnt/.config/gh" ]; then
-  cat <<EOF
-
-WARNING: Mounted host config not found at /mnt/.config/gh.
-This feature relies on a tool that supports feature-level "mounts" in devcontainer-feature.json.
-The symlink will be created anyway, but it may point to a non-existent target if the
-mount was not applied.
-
-EOF
-fi
-
 # Check if GitHub CLI is installed
 if ! command -v gh >/dev/null 2>&1; then
     cat <<EOF
@@ -43,16 +31,32 @@ Or add the github-cli feature to your devcontainer.json:
 EOF
 fi
 
-# Backup existing directory if it exists and is not already a symlink
-target=".config/gh"
-path="$_REMOTE_USER_HOME/$target"
-if [ -e "$path" ] && [ ! -L "$path" ] && [ ! -e "$path.bak" ]; then
-    echo "Backing up existing $path to $path.bak"
-    mv "$path" "$path.bak"
+# Install the mount-setup helper and the runtime re-run script to a persistent
+# directory. The staged feature folder is removed from the image after the
+# build, and the postCreateCommand needs to survive to container start.
+feature_dir="/usr/local/share/devcontainer-features/github-cli-mounts"
+install -d -m 0755 "$feature_dir"
+install -m 0755 "$(dirname "$0")/setup-mounts.sh" "$feature_dir/setup-mounts.sh"
+
+# <relative-target> <mount-path> pairs consumed by setup-mounts.sh
+cat > "$feature_dir/mounts.txt" <<'EOF'
+.config/gh /mnt/.config/gh
+EOF
+
+cat > "$feature_dir/post-create.sh" <<EOF
+#!/bin/sh
+set -eu
+home="\${HOME:-}"
+if [ -z "\$home" ]; then
+  echo "ERROR: \$HOME is not set; cannot set up github-cli-mounts." >&2
+  exit 1
 fi
+MOUNTS_PHASE=runtime "$feature_dir/setup-mounts.sh" "\$home" \$(cat "$feature_dir/mounts.txt")
+EOF
+chmod 0755 "$feature_dir/post-create.sh"
 
-# Create symlink from the user's home directory to the mounted location
-mkdir -p "$_REMOTE_USER_HOME/.config"
-ln -sfn /mnt/.config/gh "$path"
-
-chown -h "$_REMOTE_USER:$_REMOTE_USER" "$path"
+# Build-time pass: create the symlinks now so the image is self-contained even
+# if feature lifecycle hooks are not run. The /mnt targets usually do not exist
+# yet (feature mounts are applied at container start), so setup-mounts.sh is
+# invoked in build phase, which skips the missing-mount warning.
+MOUNTS_PHASE=build "$feature_dir/setup-mounts.sh" "$_REMOTE_USER_HOME" $(cat "$feature_dir/mounts.txt")

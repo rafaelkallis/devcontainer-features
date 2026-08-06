@@ -41,6 +41,7 @@ Mounts host Claude configuration directories `~/.claude.json` and `~/.claude/` i
 
 **Notes / limitations:**
 - Requires tooling that supports **feature-level `mounts`** (VS Code or devcontainer CLI that honors the `mounts` field in the feature manifest) and host config present at build time.
+- Symlinks are created at build time; a `postCreateCommand` re-runs the setup at container start and warns if a mount target is missing (i.e. feature `mounts` were not honored).
 - `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.
 
 ---
