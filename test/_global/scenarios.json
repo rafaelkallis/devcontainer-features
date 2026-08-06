@@ -11,5 +11,17 @@
     "features": {
       "codex-mounts": {}
     }
+  },
+  "azure_cli_mounts": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "azure-cli-mounts": {}
+    }
+  },
+  "github_cli_mounts": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "github-cli-mounts": {}
+    }
   }
 }

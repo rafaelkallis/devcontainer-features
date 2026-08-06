@@ -64,3 +64,49 @@ Mounts the host Codex CLI configuration directory `~/.codex/` into the dev conta
 **Notes / limitations:**
 - Requires tooling that supports **feature-level `mounts`** and host config present at build time.
 - Mounted content keeps host ownership/permissions; see the feature's `NOTES.md` for details.
+
+---
+
+### Azure CLI Mounts
+
+Mounts the host Azure CLI configuration directory `~/.azure/` into the dev container, enabling `az` to use your existing authentication, configuration, and profiles.
+
+```jsonc
+// devcontainer.json
+{
+  "features": {
+    "ghcr.io/rafaelkallis/devcontainer-features/azure-cli-mounts:1": {}
+  }
+}
+```
+
+**Prerequisites:**
+- Azure CLI installed on host with existing configuration in `~/.azure/`
+- Azure CLI installed in dev container (e.g. via the `azure-cli` feature)
+
+**Notes / limitations:**
+- Requires tooling that supports **feature-level `mounts`** and host config present at build time.
+- `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.
+
+---
+
+### GitHub CLI Mounts
+
+Mounts the host GitHub CLI configuration directory `~/.config/gh/` into the dev container, enabling `gh` to use your existing authentication, configuration, and hosts.
+
+```jsonc
+// devcontainer.json
+{
+  "features": {
+    "ghcr.io/rafaelkallis/devcontainer-features/github-cli-mounts:1": {}
+  }
+}
+```
+
+**Prerequisites:**
+- GitHub CLI installed on host with existing configuration in `~/.config/gh/`
+- GitHub CLI installed in dev container (e.g. via the `github-cli` feature)
+
+**Notes / limitations:**
+- Requires tooling that supports **feature-level `mounts`** and host config present at build time.
+- `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.

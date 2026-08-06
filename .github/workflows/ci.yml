@@ -41,7 +41,7 @@ jobs:
 
       - name: Create mock host config files (required for mount features)
         run: |
-          mkdir -p ~/.claude ~/.codex
+          mkdir -p ~/.claude ~/.codex ~/.azure ~/.config/gh
           echo "{}" > ~/.claude.json
 
       - name: Generating tests for '${{ matrix.feature.id }}' against '${{ matrix.baseImage }}'
@@ -62,7 +62,7 @@ jobs:
 
       - name: Create mock host config files (required for mount features)
         run: |
-          mkdir -p ~/.claude ~/.codex
+          mkdir -p ~/.claude ~/.codex ~/.azure ~/.config/gh
           echo "{}" > ~/.claude.json
 
       - name: Testing scenarios for '${{ matrix.feature.id }}'
@@ -79,7 +79,7 @@ jobs:
 
       - name: Create mock host config files (required for mount features)
         run: |
-          mkdir -p ~/.claude ~/.codex
+          mkdir -p ~/.claude ~/.codex ~/.azure ~/.config/gh
           echo "{}" > ~/.claude.json
 
       - name: Testing global scenarios
