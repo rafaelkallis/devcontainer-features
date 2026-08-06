@@ -1,7 +1,7 @@
 {
     "name": "GitHub CLI Mounts",
     "id": "github-cli-mounts",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Mounts host GitHub CLI configuration directory into the dev container",
     "options": {},
     "postCreateCommand": "/usr/local/share/devcontainer-features/github-cli-mounts/post-create.sh",
