@@ -12,7 +12,8 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-if [ -z "${_REMOTE_USER}" ]; then
+# Guard with `:-` so `set -u` does not abort before we can print a helpful message.
+if [ -z "${_REMOTE_USER:-}" ] || [ -z "${_REMOTE_USER_HOME:-}" ]; then
   echo -e 'Feature script must be executed by a tool that implements the dev container specification. See https://containers.dev/ for more information.'
   exit 1
 fi
