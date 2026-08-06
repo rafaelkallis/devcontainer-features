@@ -1,0 +1,14 @@
+{
+    "name": "Azure CLI Mounts",
+    "id": "azure-cli-mounts",
+    "version": "1.0.0",
+    "description": "Mounts host Azure CLI configuration directory into the dev container",
+    "options": {},
+    "mounts": [
+        {
+            "type": "bind",
+            "source": "${localEnv:HOME}/.azure",
+            "target": "/mnt/.azure"
+        }
+    ]
+}
