@@ -87,6 +87,7 @@ Mounts the host Azure CLI configuration directory `~/.azure/` into the dev conta
 **Notes / limitations:**
 - Requires tooling that supports **feature-level `mounts`** and host config present at build time.
 - `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.
+- **macOS/Windows caveat:** `az` stores its auth token in the OS Keychain / Credential Manager, not in `~/.azure`, so this mount may not transfer your login. You may need to `az login` again inside the container.
 
 ---
 
@@ -110,3 +111,4 @@ Mounts the host GitHub CLI configuration directory `~/.config/gh/` into the dev 
 **Notes / limitations:**
 - Requires tooling that supports **feature-level `mounts`** and host config present at build time.
 - `chown -h` updates the symlink only; the mounted content keeps host ownership/permissions. See the feature's `NOTES.md` for details.
+- **macOS/Windows caveat:** `gh` stores its auth token in the OS Keychain / Credential Manager by default, so this mount may not transfer your login. You may need to `gh auth login` again inside the container.

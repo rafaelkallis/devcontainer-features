@@ -8,3 +8,8 @@
 ## Permissions
 
 `chown -h` only updates ownership of the symlink itself, not the mounted content on `/mnt`. The mounted directory keeps host-side ownership and permissions. If you hit permission errors inside the container, fix the ownership/permissions of `~/.config/gh` on the host.
+
+## Platform caveats
+
+- **macOS stores GitHub auth in the Keychain, not `~/.config/gh`.** `gh auth login` stores your token in the macOS Keychain via the `osxkeychain` credential helper by default; `~/.config/gh/hosts.yml` only contains the token when the default keyring isn't used (e.g. `GH_TOKEN`, a custom credential helper, or a non-Keychain setup). Mounting `~/.config/gh` alone may therefore **not** transfer your `gh` authentication into the container. Re-authenticate with `gh auth login` inside the container if git/gh prompts for credentials.
+- **Windows** uses the Windows Credential Manager in the same way; the same caveat applies.
