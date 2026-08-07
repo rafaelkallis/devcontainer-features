@@ -1,46 +1,66 @@
 #!/bin/sh
 set -eu
 
-# setup-mounts.sh — idempotently symlink host config mounts into the remote
-# user's home.
+# setup-mounts.sh <home> --pairs-file <file>
 #
-# Two phases:
-#   1. Build time (from install.sh, as root): creates the symlinks so the image
-#      is self-contained. The /mnt targets may not exist yet — feature mounts
-#      are only applied at container start, not during the build.
-#   2. Runtime (from the feature's postCreateCommand, as the remote user):
+# Reads <relative-target> <mount-path> pairs (one per line) from <file> and
+# idempotently symlinks each mount into <home>. Lines beginning with '#' and
+# blank lines are ignored.
+#
+# Two phases (controlled by the MOUNTS_PHASE env var):
+#   1. build  (from install.sh, as root): creates the symlinks so the image is
+#      self-contained. The /mnt targets may not exist yet — feature mounts are
+#      only applied at container start, not during the build.
+#   2. runtime (from the feature's postCreateCommand, as the remote user):
 #      re-runs the same idempotent setup once the mounts exist. Only then do we
 #      warn if a mount target is genuinely missing (e.g. the tool ignored
 #      feature mounts).
 #
 # The helper is installed to a persistent directory by install.sh, because the
 # staged feature folder is removed from the image after the build.
-#
-# Usage:
-#   setup-mounts.sh <home> <target> <mount-path> [<target> <mount-path> ...]
 
-home="$1"
-shift
-
-# Guard: we need a real home to write into.
+home="${1:-}"
 if [ -z "$home" ] || [ ! -d "$home" ]; then
     echo "ERROR: Remote user home '$home' does not exist." >&2
     exit 1
 fi
+shift
 
-while [ "$#" -ge 2 ]; do
-    target="$1"
-    mount_path="$2"
-    shift 2
+pairs_file=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --pairs-file)
+            pairs_file="${2:-}"
+            shift 2
+            ;;
+        *)
+            echo "ERROR: Unknown argument '$1'." >&2
+            exit 1
+            ;;
+    esac
+done
+
+if [ -z "$pairs_file" ] || [ ! -r "$pairs_file" ]; then
+    echo "ERROR: Mounts pairs file '$pairs_file' is not readable." >&2
+    exit 1
+fi
+
+mount_should_exist="${MOUNTS_PHASE:-build}"
+
+while read -r target mount_path _rest; do
+    case "$target" in
+        '' | \#*) continue ;;
+    esac
+
+    if [ -z "$mount_path" ]; then
+        echo "WARNING: Ignoring malformed mounts entry for '$target'." >&2
+        continue
+    fi
 
     dest="$home/$target"
 
     # At build time the mounts don't exist yet, so only warn at runtime when the
-    # mount should actually be present. install.sh runs as root with
-    # _REMOTE_USER_HOME set; the postCreateCommand runs as the remote user with
-    # $HOME set, so we can tell the two phases apart by the env it was invoked
-    # under — but this helper is called from install.sh with an explicit phase.
-    mount_should_exist="${MOUNTS_PHASE:-build}"
+    # mount should actually be present.
     if [ "$mount_should_exist" = "runtime" ] && [ ! -e "$mount_path" ]; then
         cat <<EOF
 
@@ -65,4 +85,4 @@ EOF
     if [ "$(id -u)" -eq 0 ] && [ -n "${_REMOTE_USER:-}" ] && [ "$mount_should_exist" = "build" ]; then
         chown -h "$_REMOTE_USER:$_REMOTE_USER" "$dest"
     fi
-done
+done < "$pairs_file"

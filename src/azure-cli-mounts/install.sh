@@ -45,7 +45,7 @@ if [ -z "\$home" ]; then
   echo "ERROR: \$HOME is not set; cannot set up azure-cli-mounts." >&2
   exit 1
 fi
-MOUNTS_PHASE=runtime "$feature_dir/setup-mounts.sh" "\$home" \$(cat "$feature_dir/mounts.txt")
+MOUNTS_PHASE=runtime "$feature_dir/setup-mounts.sh" "\$home" --pairs-file "$feature_dir/mounts.txt"
 EOF
 chmod 0755 "$feature_dir/post-create.sh"
 
@@ -53,4 +53,4 @@ chmod 0755 "$feature_dir/post-create.sh"
 # if feature lifecycle hooks are not run. The /mnt targets usually do not exist
 # yet (feature mounts are applied at container start), so setup-mounts.sh is
 # invoked in build phase, which skips the missing-mount warning.
-MOUNTS_PHASE=build "$feature_dir/setup-mounts.sh" "$_REMOTE_USER_HOME" $(cat "$feature_dir/mounts.txt")
+MOUNTS_PHASE=build "$feature_dir/setup-mounts.sh" "$_REMOTE_USER_HOME" --pairs-file "$feature_dir/mounts.txt"
