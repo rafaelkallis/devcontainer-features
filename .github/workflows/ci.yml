@@ -36,6 +36,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker buildx layers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/buildx
+          key: buildx-${{ runner.os }}-${{ matrix.baseImage }}
+
       - name: Install devcontainer CLI
         run: npm install -g @devcontainers/cli
 
@@ -57,6 +66,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker buildx layers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/buildx
+          key: buildx-${{ runner.os }}-${{ matrix.feature.id }}
+
       - name: Install devcontainer CLI
         run: npm install -g @devcontainers/cli
 
@@ -73,6 +91,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker buildx layers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/buildx
+          key: buildx-${{ runner.os }}-global
 
       - name: Install devcontainer CLI
         run: npm install -g @devcontainers/cli

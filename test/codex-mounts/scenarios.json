@@ -22,5 +22,13 @@
         "features": {
             "codex-mounts": {}
         }
+    },
+    "preexisting_config": {
+        "build": {
+            "dockerfile": "Dockerfile"
+        },
+        "features": {
+            "codex-mounts": {}
+        }
     }
 }
