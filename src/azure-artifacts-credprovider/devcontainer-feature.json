@@ -1,0 +1,25 @@
+{
+    "name": "Azure Artifacts Credential Provider",
+    "id": "azure-artifacts-credprovider",
+    "version": "1.0.0",
+    "description": "Installs the Azure Artifacts Credential Provider so dotnet/nuget can authenticate to Azure Artifacts feeds",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "2.0.4"
+            ],
+            "default": "latest",
+            "description": "Select the Azure Artifacts Credential Provider version to install. Use a release tag (e.g. '2.0.4')."
+        },
+        "installLibsecretAndXdgUtils": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install libsecret-1-0 and xdg-utils (Debian/Ubuntu) for interactive browser-based authentication. Disable to skip if already present."
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
