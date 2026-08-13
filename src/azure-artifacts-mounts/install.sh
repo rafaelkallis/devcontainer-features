@@ -30,6 +30,16 @@ EOF
 mkdir -p "$_REMOTE_USER_HOME/.local"
 chown "$_REMOTE_USER:$_REMOTE_USER" "$_REMOTE_USER_HOME/.local"
 
+# The Docker volume is mounted at /mnt/.IdentityService at container start, but
+# the mount target does not exist in the image during the build. On the first
+# mount of a NEW named volume, Docker initializes it by copying the *contents
+# and ownership* of the directory already present at the mount target in the
+# image. Pre-create the mount target owned by the remote user so a fresh volume
+# is created writable by the remote user (otherwise it is root-owned and the
+# credential provider cannot write msal.cache.lockfile into it).
+mkdir -p /mnt/.IdentityService
+chown "$_REMOTE_USER:$_REMOTE_USER" /mnt/.IdentityService
+
 cat > "$feature_dir/post-create.sh" <<EOF
 #!/bin/sh
 set -eu
@@ -37,6 +47,20 @@ home="\${HOME:-}"
 if [ -z "\$home" ]; then
   echo "ERROR: \$HOME is not set; cannot set up azure-artifacts-mounts." >&2
   exit 1
+fi
+user="\$(id -un)"
+# The named volume is attached at /mnt/.IdentityService at container start.
+# A volume created before the install.sh fix (or by older tooling) may be
+# root-owned. Make sure the remote user can write it so the credential
+# provider can create msal.cache / msal.cache.lockfile inside it.
+if [ -e /mnt/.IdentityService ] && [ ! -w /mnt/.IdentityService ] && [ "\$user" != "root" ]; then
+  echo "azure-artifacts-mounts: fixing ownership of /mnt/.IdentityService for \$user..."
+  if command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then
+    sudo chown "\$user" /mnt/.IdentityService
+  else
+    echo "WARNING: /mnt/.IdentityService is not writable and sudo is unavailable for \$user." >&2
+    echo "WARNING: Run 'sudo chown -R \$(id -un) /mnt/.IdentityService' to fix it, or recreate the volume." >&2
+  fi
 fi
 MOUNTS_PHASE=runtime "$feature_dir/setup-mounts.sh" "\$home" --pairs-file "$feature_dir/mounts.txt"
 EOF

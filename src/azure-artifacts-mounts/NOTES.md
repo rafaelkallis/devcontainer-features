@@ -44,6 +44,33 @@ feeds authenticate silently on rebuild.
   the setup once the container exists and warns if `/mnt/.IdentityService` is
   genuinely missing — that warning is the signal that feature `mounts` were not
   honored.
+
+## Volume ownership
+
+The named volume is attached at container start and must be writable by the
+remote user, because the credential provider writes
+`~/.local/.IdentityService/msal.cache` (via the symlink) and a
+`msal.cache.lockfile` into it.
+
+- **Fresh volumes** are initialized by Docker from the directory already present
+  at the mount target in the image. `install.sh` pre-creates
+  `/mnt/.IdentityService` owned by the remote user, so a newly created volume is
+  writable by the remote user out of the box.
+- **Existing volumes** that were created before this behavior (e.g. root-owned)
+  are fixed automatically by the `postCreateCommand`: it detects that the mount
+  is not writable by the remote user and runs
+  `sudo chown <remote-user> /mnt/.IdentityService` (the remote user has
+  passwordless sudo in the dev container base images). Existing cached tokens in
+  the volume are preserved.
+- If you hit `Access to the path '.../.IdentityService/msal.cache.lockfile' is
+  denied` on a volume created before the fix, either rebuild/recreate the
+  container once (the `postCreateCommand` will repair ownership), or reset the
+  (ephemeral) cache volume manually:
+  ```sh
+  docker volume rm azure-artifacts-msal
+  ```
+  The next container start will recreate it writable.
+
 - **Prerequisite: the Azure Artifacts Credential Provider must be installed.**
   This feature only persists the credential cache; it does not install the
   provider or .NET. Install it separately, e.g. with:
