@@ -1,0 +1,35 @@
+{
+    "base_alpine": {
+        "image": "mcr.microsoft.com/devcontainers/base:alpine",
+        "features": {
+            "azure-artifacts-credprovider": {}
+        }
+    },
+    "base_debian": {
+        "image": "mcr.microsoft.com/devcontainers/base:debian",
+        "features": {
+            "azure-artifacts-credprovider": {}
+        }
+    },
+    "base_ubuntu": {
+        "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+        "features": {
+            "azure-artifacts-credprovider": {}
+        }
+    },
+    "non_root_user": {
+        "image": "mcr.microsoft.com/devcontainers/base",
+        "remoteUser": "vscode",
+        "features": {
+            "azure-artifacts-credprovider": {}
+        }
+    },
+    "version_specific": {
+        "image": "mcr.microsoft.com/devcontainers/base",
+        "features": {
+            "azure-artifacts-credprovider": {
+                "version": "2.0.4"
+            }
+        }
+    }
+}
