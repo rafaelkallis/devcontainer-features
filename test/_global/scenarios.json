@@ -23,5 +23,11 @@
     "features": {
       "github-cli-mounts": {}
     }
+  },
+  "azure_artifacts_mounts": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "azure-artifacts-mounts": {}
+    }
   }
 }
