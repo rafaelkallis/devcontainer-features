@@ -1,0 +1,15 @@
+{
+    "name": "Azure Artifacts Credential Mount",
+    "id": "azure-artifacts-mounts",
+    "version": "1.0.0",
+    "description": "Persists the Azure Artifacts Credential Provider MSAL token cache in a Docker volume so interactive feeds logins survive container rebuilds",
+    "options": {},
+    "postCreateCommand": "/usr/local/share/devcontainer-features/azure-artifacts-mounts/post-create.sh",
+    "mounts": [
+        {
+            "type": "volume",
+            "source": "azure-artifacts-msal",
+            "target": "/mnt/.IdentityService"
+        }
+    ]
+}
