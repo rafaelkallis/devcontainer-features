@@ -73,7 +73,9 @@ remote user, because the credential provider writes
 
 - **Prerequisite: the Azure Artifacts Credential Provider must be installed.**
   This feature only persists the credential cache; it does not install the
-  provider or .NET. Install it separately, e.g. with:
+  provider or .NET. Install it with the companion
+  [`azure-artifacts-credprovider`](https://github.com/rafaelkallis/devcontainer-features/tree/main/src/azure-artifacts-credprovider)
+  feature (recommended), or separately, e.g. with:
   ```sh
   dotnet tool install --global Microsoft.Artifacts.CredentialProvider.NuGet.Tool
   ```

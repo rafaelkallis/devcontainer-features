@@ -29,5 +29,11 @@
     "features": {
       "azure-artifacts-mounts": {}
     }
+  },
+  "azure_artifacts_credprovider": {
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+      "azure-artifacts-credprovider": {}
+    }
   }
 }
