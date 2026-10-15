@@ -1,6 +1,9 @@
 # Backup files created by feature install scripts (.bak)
 *.bak
 
+# Git worktrees (project isolation pattern, see AGENTS.md)
+.worktrees/
+
 # Node.js
 node_modules/
 
