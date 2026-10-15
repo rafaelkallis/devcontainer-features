@@ -4,13 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Dev Container Features monorepo containing custom features for development environments. Currently includes 5 features:
+Dev Container Features monorepo containing custom features for development environments. Currently includes 7 features:
 
 - **claude-code**: Installs the Claude Code CLI via the native installer (`claude.ai/install.sh`) as the remote user (per-user `~/.local/bin`, `~/.local/share`).
 - **claude-code-mounts**: Mounts host `~/.claude` + `~/.claude.json` into the container (`/mnt/...`) and symlinks them into the remote user's home.
 - **codex-mounts**: Mounts host `~/.codex` → `/mnt/.codex`, symlinked into home.
 - **azure-cli-mounts**: Mounts host `~/.azure` → `/mnt/.azure`, symlinked into home.
 - **github-cli-mounts**: Mounts host `~/.config/gh` → `/mnt/.config/gh`, symlinked into home.
+- **azure-artifacts-credprovider**: Installs the Azure Artifacts Credential Provider via the upstream installer (`aka.ms/install-artifacts-credprovider.sh`) as the remote user (`~/.nuget/plugins/netcore/CredentialProvider.Microsoft/`). Debian/Ubuntu only (warns on Alpine/musl); optional libsecret/xdg-utils prereqs for interactive auth.
+- **azure-artifacts-mounts**: Persists the MSAL token cache in a **Docker named volume** (`azure-artifacts-msal` mounted at `/mnt/.IdentityService`, symlinked from `~/.local/.IdentityService`) so `dotnet restore --interactive` logins survive container rebuilds. Pairs naturally with **azure-artifacts-credprovider** (order enforced via `installsAfter`).
 
 ## Commands
 
@@ -35,7 +37,7 @@ shellcheck -S warning <script>...
   - `devcontainer-feature.json` - Feature manifest (metadata, options, dependencies, lifecycle hooks)
   - `install.sh` - Installation script (runs as root at build time)
   - `setup-mounts.sh` - Mount helper (mount features only; see below)
-  - `NOTES.md` / `README.md` - Documentation (README is auto-generated from the manifest)
+  - `NOTES.md` / `README.md` - Documentation (README is auto-generated from the manifest; azure-artifacts-credprovider has no README since it was added before the docs workflow)
 - `test/<feature-name>/` - Feature test suites
   - `test.sh` - Default test (runs with default options)
   - `scenarios.json` / `<scenario>.sh` - Scenario tests
@@ -50,6 +52,11 @@ Feature-level `mounts` in the manifest are **applied at container start, not dur
 
 `setup-mounts.sh` is idempotent: backs up an existing non-symlink dest to `.bak` (only once), uses `ln -sfn` (not `-sf`, to avoid clobbering real-dir targets), and `chown -h` only at build time (running as root).
 
+`azure-artifacts-mounts` is the one volume-based mount feature and adds two ownership hacks (see its `install.sh`):
+- Pre-create `~/.local` owned by the remote user at build time (so the runtime re-run can write the symlink inside it — root-owned parents otherwise block it).
+- Pre-create the `/mnt/.IdentityService` mount target owned by the remote user so a freshly auto-created named volume is writable (Docker copies the image-side target's ownership into new volumes). Its generated `post-create.sh` additionally self-heals root-owned volumes that predate this fix.
+- It has no `command -v <cli>` warning (the credential provider is a NuGet plugin, not a CLI) and its manifest carries `installsAfter` pointing at both `common-utils` and the `azure-artifacts-credprovider` feature.
+
 ### Key Patterns
 - **Option-to-Environment Variable Mapping**: Feature options in the manifest become uppercase environment variables in install.sh (e.g., `greeting` option becomes `$GREETING`)
 - **Test Library**: Tests use `dev-container-features-test-lib` with `check` and `reportResults` commands
@@ -62,7 +69,7 @@ Feature-level `mounts` in the manifest are **applied at container start, not dur
 - **Don't check `/mnt/*` at build time** — it always fails by design (mounts exist only at container start). Any missing-mount warning belongs in the `postCreateCommand` phase.
 - **`devcontainer features validate` does not exist.** Use `devcontainer features package <dir>` to validate a manifest.
 - **Keep the repo green:** every script must pass `shellcheck -S warning` (the CI `lint` job enforces it — e.g. avoid unquoted `$(...)` command substitutions; prefer `--pairs-file` style input over word-splitting args). All features must package cleanly.
-- **Keep the 4 mount features isolated — do not consolidate them.** Feature-level `mounts` is a static manifest array applied at container create; it cannot be made conditional on options. A combined feature would mount all 4 host dirs for everyone and break startup on hosts lacking any of them (users can't be assumed to have all 4 CLIs/configs). Each isolated feature only affects the user's home when they opt into it. This also protects the published per-feature identities/versions.
-- **The 4 `setup-mounts.sh` copies are intentionally identical.** Each feature is published as a self-contained OCI/tgz (only its own folder ships), so a shared repo-level helper can't be referenced at publish time. That's why the helper is duplicated per feature. **Keep them byte-identical** — the CI `lint` job asserts this — and update all 4 together when changing the helper.
-- **The per-feature `install.sh` also mirrors a common template** (guard env → copy helper → write `mounts.txt` → generate `post-create.sh` → run build pass). Only the `feature_dir` path, the `mounts.txt` pairs, and the "CLI not installed" hint differ. When editing one, apply the same change to all 4.
+- **Keep the 5 mount features isolated — do not consolidate them.** Feature-level `mounts` is a static manifest array applied at container create; it cannot be made conditional on options. A combined feature would mount all 4 host dirs + the MSAL volume for everyone and break startup on hosts lacking any of them (users can't be assumed to have all 4 CLIs/configs). Each isolated feature only affects the user's home when they opt into it. This also protects the published per-feature identities/versions.
+- **The 5 `setup-mounts.sh` copies are intentionally identical.** Each feature is published as a self-contained OCI/tgz (only its own folder ships), so a shared repo-level helper can't be referenced at publish time. That's why the helper is duplicated per feature. **Keep them byte-identical** — the CI `lint` job asserts this — and update all 5 together when changing the helper.
+- **The 4 `install.sh` copies of the mount features also mirror a common template** (guard env → optional CLI-presence warning → copy helper → write `mounts.txt` → generate `post-create.sh` → run build pass). Only the `feature_dir` path, the `mounts.txt` pairs, the warning text, and (for azure-artifacts-mounts) the ownership pre-creation block differ. When editing one, apply the same change to all 4. The two non-mount features (`claude-code`, `azure-artifacts-credprovider`) share a different installer template (root guard → download-cmd detection → version validation → `%q`-escaped `su -l` install → verify). shellcheck is NOT installed in the dev container; CI covers it via `ludeeus/action-shellcheck`.
 - Shell-checking/output: avoid `cp` when you need to preserve the executable bit — use `install -m 0755`.
