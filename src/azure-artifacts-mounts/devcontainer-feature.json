@@ -1,9 +1,13 @@
 {
     "name": "Azure Artifacts Credential Mount",
     "id": "azure-artifacts-mounts",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Persists the Azure Artifacts Credential Provider MSAL token cache in a Docker volume so interactive feeds logins survive container rebuilds",
     "options": {},
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/rafaelkallis/devcontainer-features/azure-artifacts-credprovider"
+    ],
     "postCreateCommand": "/usr/local/share/devcontainer-features/azure-artifacts-mounts/post-create.sh",
     "mounts": [
         {
