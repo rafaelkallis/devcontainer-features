@@ -72,9 +72,14 @@ target.
 EOF
     fi
 
-    if [ -e "$dest" ] && [ ! -L "$dest" ] && [ ! -e "$dest.bak" ]; then
-        echo "Backing up existing $dest to $dest.bak"
-        mv "$dest" "$dest.bak"
+    if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+        if [ -e "$dest.bak" ]; then
+            echo "WARNING: $dest is not a symlink and a $dest.bak backup already exists;" \
+                "replacing $dest without a second backup." >&2
+        else
+            echo "Backing up existing $dest to $dest.bak"
+            mv "$dest" "$dest.bak"
+        fi
     fi
 
     mkdir -p "$(dirname "$dest")"

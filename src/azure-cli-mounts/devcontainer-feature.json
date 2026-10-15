@@ -1,7 +1,7 @@
 {
     "name": "Azure CLI Mounts",
     "id": "azure-cli-mounts",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Mounts host Azure CLI configuration directory into the dev container",
     "options": {},
     "postCreateCommand": "/usr/local/share/devcontainer-features/azure-cli-mounts/post-create.sh",
