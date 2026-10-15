@@ -129,7 +129,7 @@ jobs:
       - name: Verify shared mount helper copies are identical
         run: |
           set -euo pipefail
-          # setup-mounts.sh is content-shared across the 4 mount features (OCI
+          # setup-mounts.sh is content-shared across the 5 mount features (OCI
           # packaging requires each feature folder to be self-contained). Keep
           # the copies byte-identical to avoid drift.
           md5sum src/*-mounts/setup-mounts.sh | awk '{print $1}' | sort -u | wc -l \
