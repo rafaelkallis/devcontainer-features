@@ -7,9 +7,6 @@
 # Node.js
 node_modules/
 
-# Machine-specific resolved lockfile for the local dev container
-.devcontainer-lock.json
-
 # Personal/local agent settings (do not commit)
 .claude/settings.local.json
 
