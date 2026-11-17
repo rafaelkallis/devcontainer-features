@@ -1,7 +1,7 @@
 {
     "name": "Claude Code CLI Mounts",
     "id": "claude-code-mounts",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Mounts host Claude configuration directories into the dev container",
     "options": {},
     "installsAfter": [

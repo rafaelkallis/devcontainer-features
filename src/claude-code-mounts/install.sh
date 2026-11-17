@@ -10,8 +10,11 @@ if [ -z "${_REMOTE_USER:-}" ] || [ -z "${_REMOTE_USER_HOME:-}" ]; then
   exit 1
 fi
 
-# Check if Claude Code CLI is installed
-if ! command -v claude >/dev/null 2>&1; then
+# Check if Claude Code CLI is installed. The claude-code feature installs it
+# per-user (~/.local/bin/claude) via the native installer, which is not on
+# root's PATH at build time — so also check the known install location.
+if ! command -v claude >/dev/null 2>&1 \
+    && [ ! -x "${_REMOTE_USER_HOME}/.local/bin/claude" ]; then
     cat <<EOF
 
 WARNING: Claude Code CLI was not found.
